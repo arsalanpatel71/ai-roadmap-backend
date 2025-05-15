@@ -5,6 +5,7 @@ pydantic-settings==2.1.0
 python-dotenv==1.0.0
 sendgrid==6.11.0
 motor==3.3.2
+pymongo==4.6.1
 pdfkit==1.0.0
 python-multipart==0.0.6
 websockets==12.0
