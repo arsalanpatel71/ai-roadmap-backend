@@ -1,4 +1,4 @@
- FROM python:3.12-slim
+FROM python:3.12-slim
 
 WORKDIR /app
 
@@ -17,6 +17,10 @@ COPY . .
 # Set environment variables
 ENV PORT=8000
 ENV PYTHONUNBUFFERED=1
+ENV CORS_ORIGINS="*"
+
+# Create necessary directories
+RUN mkdir -p app/static/pdfs output/pdfs
 
 # Expose port
 EXPOSE 8000
