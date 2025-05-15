@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ title }}</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+        color: #333;
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #2c5282; /* Aryng blue color */
+      }
+      .content {
+        line-height: 1.6;
+      }
+      .message {
+        margin-bottom: 20px;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .user {
+        background-color: #f7fafc;
+      }
+      .assistant {
+        background-color: #ebf8ff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>{{ title }}</h1>
+    </div>
+    <div class="content">{{ content | safe }}</div>
+  </body>
+</html>
