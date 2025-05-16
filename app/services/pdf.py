@@ -9,7 +9,8 @@ OUTPUT_DIR = "app/static/pdfs"
 
 env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 
-config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+# config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+config = pdfkit.configuration()
 
 async def generate_pdf(request: PDFRequest) -> None:
     os.makedirs(OUTPUT_DIR, exist_ok=True)
