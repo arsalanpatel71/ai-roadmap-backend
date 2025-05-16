@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     SENDGRID_API_KEY: str
     FROM_EMAIL: str
 
+    WKHTMLTOPDF_PATH: Optional[str] = None
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

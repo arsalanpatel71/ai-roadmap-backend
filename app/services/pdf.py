@@ -3,25 +3,25 @@ from jinja2 import Environment, FileSystemLoader
 import os
 from datetime import datetime
 from ..schemas.pdf import PDFRequest
+from ..core.config import settings # Import settings
 
 TEMPLATE_DIR = "app/templates"
-OUTPUT_DIR = "/tmp/pdfs"
+OUTPUT_DIR = "app/static/pdfs"
 
 env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 
-# Construct the absolute path to the wkhtmltopdf binary
-# This assumes your 'bin' directory is at the project root.
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-WKHTMLTOPDF_BINARY_PATH = os.path.join(PROJECT_ROOT, 'bin', 'wkhtmltopdf')
-
-# Check if the binary exists at the constructed path for debugging
-if not os.path.exists(WKHTMLTOPDF_BINARY_PATH):
-    print(f"Warning: wkhtmltopdf binary not found at {WKHTMLTOPDF_BINARY_PATH}")
-    # Fallback or raise an error if needed, for now, pdfkit will try to find it in PATH
-    config = pdfkit.configuration() 
-else:
-    print(f"Using wkhtmltopdf binary at {WKHTMLTOPDF_BINARY_PATH}")
-    config = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_BINARY_PATH)
+# Configure pdfkit using the path from settings
+pdfkit_config = None
+if settings.WKHTMLTOPDF_PATH:
+    try:
+        pdfkit_config = pdfkit.configuration(wkhtmltopdf=settings.WKHTMLTOPDF_PATH)
+        # You might want to add a check here to see if the path is valid
+        # e.g., if not os.path.isfile(settings.WKHTMLTOPDF_PATH):
+        #    print(f"Warning: WKHTMLTOPDF_PATH '{settings.WKHTMLTOPDF_PATH}' does not point to a valid file.")
+        #    pdfkit_config = None # Fallback to system PATH
+    except Exception as e:
+        print(f"Warning: Could not configure pdfkit with path '{settings.WKHTMLTOPDF_PATH}': {e}")
+        # pdfkit_config will remain None, allowing pdfkit to try the system PATH
 
 async def generate_pdf(request: PDFRequest) -> None:
     os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -49,5 +49,5 @@ async def generate_pdf(request: PDFRequest) -> None:
         html_content,
         output_path,
         options=options,
-        configuration=config
+        configuration=pdfkit_config
     ) 
