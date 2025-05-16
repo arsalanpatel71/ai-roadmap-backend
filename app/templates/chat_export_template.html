@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ title }}</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 2.5cm;
+        @top-center {
+          content: "Chat History Export";
+        }
+        @bottom-center {
+          content: counter(page);
+        }
+      }
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 2em;
+        color: #2c5282; /* Aryng blue color */
+      }
+      .company-info {
+        margin-bottom: 2em;
+        padding: 1em;
+        background-color: #f7fafc;
+        border-radius: 5px;
+      }
+      .chat-content-wrapper {
+        /* Renamed from chat-content to avoid conflict if nested */
+        margin-top: 1em;
+      }
+      .message-block {
+        margin-bottom: 1em;
+        padding: 0.8em;
+        border-radius: 5px;
+        page-break-inside: avoid;
+        border: 1px solid #ddd;
+      }
+      .message-block h3 {
+        /* Role: User/Assistant */
+        margin-top: 0;
+        margin-bottom: 0.5em;
+        font-size: 1.1em;
+        color: #2c5282;
+      }
+      .message-block.user {
+        background-color: #e9f5ff; /* Lighter blue for user */
+      }
+      .message-block.assistant {
+        background-color: #fff9e6; /* Light yellow for assistant */
+      }
+      .message-text-content p {
+        /* Renamed from message-content to avoid conflict */
+        margin-top: 0;
+        white-space: pre-wrap; /* Preserve line breaks from original content */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>{{ title }}</h1>
+    </div>
+
+    {% if company_name %}
+    <div class="company-info">
+      <h2>Company Information</h2>
+      <p><strong>Company:</strong> {{ company_name }}</p>
+      {% if industry %}
+      <p><strong>Industry:</strong> {{ industry }}</p>
+      {% endif %} {% if company_size %}
+      <p><strong>Size:</strong> {{ company_size }}</p>
+      {% endif %}
+      <p><strong>Exported on:</strong> {{ generated_at }}</p>
+    </div>
+    {% endif %}
+
+    <div class="chat-content-wrapper">
+      <h2>Chat Transcript</h2>
+      {{ chat_html_content | safe }}
+    </div>
+  </body>
+</html>

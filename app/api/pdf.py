@@ -3,6 +3,7 @@ from ..schemas.pdf import PDFRequest, PDFResponse
 from ..services.pdf import generate_pdf, OUTPUT_DIR
 from ..services.form import get_user_request
 from ..services.sendgrid_email import send_email
+from ..utils.format import format_chat_history_for_html
 import os
 from datetime import datetime
 
@@ -79,6 +80,86 @@ AI Roadmap Team""",
     except Exception as e:
         error_detail = f"Error: {str(e)}"
         print(f"PDF Generation Error: {error_detail}")
+        raise HTTPException(status_code=500, detail=error_detail)
+
+@router.post("/export-chat-history/{request_id}")
+async def export_chat_history_pdf(request_id: str):
+    """Generate PDF of full chat history and send via email"""
+    try:
+        user_data = await get_user_request(request_id)
+        if not user_data:
+            raise HTTPException(status_code=404, detail="Request not found")
+
+        if 'form' not in user_data or 'email' not in user_data['form']:
+            raise HTTPException(status_code=400, detail="Email not found in form data for this request")
+
+        email = user_data['form']['email']
+        company_name = user_data['form'].get('company_name', 'N/A')
+        industry = user_data['form'].get('industry')
+        company_size = user_data['form'].get('company_size')
+
+        chat_history = user_data.get('chat_history', [])
+        if not chat_history:
+            raise HTTPException(status_code=404, detail="No chat history found for this request")
+
+        chat_html_content = format_chat_history_for_html(chat_history)
+
+        safe_company_name = "".join(c if c.isalnum() or c in (' ', '_') else '_' for c in company_name).rstrip()
+        output_filename = f"chat_history_{safe_company_name.lower().replace(' ', '_')}_{request_id}.pdf"
+        
+        pdf_data_for_template = {
+            "title": f"Chat History for {company_name}",
+            "company_name": company_name,
+            "industry": industry,
+            "company_size": company_size,
+            "chat_html_content": chat_html_content
+        }
+
+        pdf_request = PDFRequest(
+            template_name="chat_export_template", 
+            data=pdf_data_for_template,
+            output_filename=output_filename
+        )
+
+        pdf_path = await generate_pdf(pdf_request) 
+
+        email_subject = f"Exported Chat History for {company_name}"
+        email_body = f"""Dear {company_name},
+
+Please find attached the exported chat history for your records.
+
+Best regards,
+AI Roadmap Team"""
+
+        email_result = await send_email(
+            to_email=email,
+            subject=email_subject,
+            content=email_body,
+            attachment_path=pdf_path
+        )
+
+        if email_result.get("status") == "success":
+            return {
+                "status": "success",
+                "message": "Chat history PDF generated and sent to email successfully.",
+                "filename": output_filename,
+                "pdf_path": pdf_path 
+            }
+        else:
+            print(f"Email sending failed for chat history export (request_id: {request_id}): {email_result}")
+            return {
+                "status": "partial_success",
+                "message": f"Chat history PDF generated successfully but email sending failed: {email_result.get('message', 'Unknown error')}",
+                "filename": output_filename,
+                "pdf_path": pdf_path
+            }
+
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        import traceback
+        error_detail = f"Error exporting chat history: {str(e)}"
+        print(f"Chat History Export Error (request_id: {request_id}): {error_detail}\n{traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=error_detail)
 
 @router.post("/test-email")
