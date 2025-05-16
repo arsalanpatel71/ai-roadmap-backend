@@ -9,8 +9,19 @@ OUTPUT_DIR = "/tmp/pdfs"
 
 env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 
-config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
-# config = pdfkit.configuration()
+# Construct the absolute path to the wkhtmltopdf binary
+# This assumes your 'bin' directory is at the project root.
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+WKHTMLTOPDF_BINARY_PATH = os.path.join(PROJECT_ROOT, 'bin', 'wkhtmltopdf')
+
+# Check if the binary exists at the constructed path for debugging
+if not os.path.exists(WKHTMLTOPDF_BINARY_PATH):
+    print(f"Warning: wkhtmltopdf binary not found at {WKHTMLTOPDF_BINARY_PATH}")
+    # Fallback or raise an error if needed, for now, pdfkit will try to find it in PATH
+    config = pdfkit.configuration() 
+else:
+    print(f"Using wkhtmltopdf binary at {WKHTMLTOPDF_BINARY_PATH}")
+    config = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_BINARY_PATH)
 
 async def generate_pdf(request: PDFRequest) -> None:
     os.makedirs(OUTPUT_DIR, exist_ok=True)
