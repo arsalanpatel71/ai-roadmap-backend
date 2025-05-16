@@ -25,5 +25,9 @@ RUN mkdir -p app/static/pdfs output/pdfs
 # Expose port
 EXPOSE 8000
 
+# Health check (optional, if your platform uses it from Dockerfile)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:${PORT}/health || exit 1
+
 # Start command
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
