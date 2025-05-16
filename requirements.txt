@@ -1,5 +1,6 @@
 pdfkit==1.0.0
 fastapi-mail==1.4.1
 sendgrid==6.11.0
-motor>=3.0,<4.0  # Ensures Motor version 3.x
-pymongo>=4.0,<5.0 # Ensures PyMongo version 4.x, compatible with Motor 3.x 
+motor>=3.0,<4.0 
+pymongo>=4.0,<5.0 
+uvicorn[standard]
