@@ -5,12 +5,12 @@ from datetime import datetime
 from ..schemas.pdf import PDFRequest
 
 TEMPLATE_DIR = "app/templates"
-OUTPUT_DIR = "app/static/pdfs"
+OUTPUT_DIR = "/tmp/pdfs"
 
 env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 
-# config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
-config = pdfkit.configuration()
+config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+# config = pdfkit.configuration()
 
 async def generate_pdf(request: PDFRequest) -> None:
     os.makedirs(OUTPUT_DIR, exist_ok=True)
