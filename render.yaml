@@ -6,6 +6,7 @@ services:
       apt-get update
       apt-get install -y wkhtmltopdf ca-certificates
       update-ca-certificates
+      pip install certifi
       pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host=0.0.0.0 --port=10000
     envVars:
@@ -14,7 +15,7 @@ services:
       - key: WKHTMLTOPDF_PATH
         value: "/usr/bin/wkhtmltopdf"
       - key: MONGO_URI
-        value: "mongodb+srv://rivermalik90:rivermalik@aryng.o6bnigx.mongodb.net/?retryWrites=true&w=majority&appName=aryng&ssl=true&tls=true&tlsAllowInvalidCertificates=true"
+        value: "mongodb+srv://rivermalik90:rivermalik@aryng.o6bnigx.mongodb.net/?retryWrites=true&w=majority&appName=aryng&ssl=true&tls=true&tlsAllowInvalidCertificates=true&tlsCAFile=/etc/ssl/certs/ca-certificates.crt&authSource=admin"
       - key: OPENAI_API_KEY
         value: "your_openai_api_key"
       - key: ASSISTANT_ID
