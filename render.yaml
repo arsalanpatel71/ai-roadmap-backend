@@ -14,7 +14,7 @@ services:
       - key: WKHTMLTOPDF_PATH
         value: "/usr/bin/wkhtmltopdf"
       - key: MONGO_URI
-        value: "mongodb+srv://rivermalik90:rivermalik@aryng.o6bnigx.mongodb.net/?retryWrites=true&w=majority&appName=aryng&ssl=true"
+        value: "mongodb+srv://rivermalik90:rivermalik@aryng.o6bnigx.mongodb.net/?retryWrites=true&w=majority&appName=aryng&ssl=true&tls=true&tlsAllowInvalidCertificates=true"
       - key: OPENAI_API_KEY
         value: "your_openai_api_key"
       - key: ASSISTANT_ID
