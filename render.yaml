@@ -9,3 +9,15 @@ services:
     envVars:
       - key: PYTHONUNBUFFERED
         value: "1"
+      - key: WKHTMLTOPDF_PATH
+        value: "/usr/bin/wkhtmltopdf"
+      - key: MONGO_URI
+        value: "mongodb+srv://rivermalik90:rivermalik@aryng.o6bnigx.mongodb.net/?retryWrites=true&w=majority&appName=aryng&ssl=true"
+      - key: OPENAI_API_KEY
+        value: "your_openai_api_key"
+      - key: ASSISTANT_ID
+        value: "your_assistant_id"
+      - key: SENDGRID_API_KEY
+        value: "your_sendgrid_api_key"
+      - key: FROM_EMAIL
+        value: "your_verified_sender_email"
