@@ -93,6 +93,7 @@ async def export_chat_history_pdf(request_id: str):
         if 'form' not in user_data or 'email' not in user_data['form']:
             raise HTTPException(status_code=400, detail="Email not found in form data for this request")
 
+        user_name = user_data['form'].get('name', 'User')
         email = user_data['form']['email']
         company_name = user_data['form'].get('company_name', 'N/A')
         industry = user_data['form'].get('industry')
@@ -102,7 +103,7 @@ async def export_chat_history_pdf(request_id: str):
         if not chat_history:
             raise HTTPException(status_code=404, detail="No chat history found for this request")
 
-        chat_html_content = format_chat_history_for_html(chat_history)
+        chat_html_content = format_chat_history_for_html(chat_history, user_name)
 
         safe_company_name = "".join(c if c.isalnum() or c in (' ', '_') else '_' for c in company_name).rstrip()
         output_filename = f"chat_history_{safe_company_name.lower().replace(' ', '_')}_{request_id}.pdf"
